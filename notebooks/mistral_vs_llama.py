@@ -1,7 +1,7 @@
 from lamini import Lamini
 
 # Directly set the API key
-# api_key = '4895cda19e866d7c0c727188c8ffe51c7b3f9a436f72c6d76520288aaf662ee2'
+# api_key = 'your api key here'
 
 # Initialize the Lamini object with the API key
 llm = Lamini(api_key=api_key, model_name="mistralai/Mistral-7B-Instruct-v0.1")
