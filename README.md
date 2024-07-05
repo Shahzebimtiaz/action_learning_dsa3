@@ -6,7 +6,7 @@ This project focuses on fine-tuning the ClinicalBERT model using clinical notes 
 
 ## Project Structure
 
-
+```
 ├── config
 │  ├──config.json # Hyperparameters and configuration for training
 ├── data
@@ -23,7 +23,7 @@ This project focuses on fine-tuning the ClinicalBERT model using clinical notes 
 │   ├── train.py # Script for training the model
 │   ├── evaluate.py # Script for evaluating the model
 │   ├── generate_csv.py # Script for generating CSV files for training
-
+```
 
 
 ## Folder Details
