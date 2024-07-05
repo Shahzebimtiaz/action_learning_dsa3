@@ -92,6 +92,9 @@ Evaluate the model's performance using the evaluation script:
 python src/evaluate.py
 ```
 
+### Evaluation Metrics
+![Recall, Precision, Accuracy](images/1.png)
+
 ### Notebooks
 Explore the notebooks folder for various Jupyter notebooks that contain detailed analyses and experiments.
 
