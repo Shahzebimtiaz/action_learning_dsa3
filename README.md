@@ -94,6 +94,7 @@ python src/evaluate.py
 
 ### Evaluation Metrics
 ![Recall, Precision, Accuracy](images/1.png)
+![f1 score](images/2.png)
 
 ### Notebooks
 Explore the notebooks folder for various Jupyter notebooks that contain detailed analyses and experiments.
