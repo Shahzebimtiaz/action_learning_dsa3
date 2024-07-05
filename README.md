@@ -82,15 +82,16 @@ Ensure you have the following installed:
 Run the training script to fine-tune the ClinicalBERT model:
 ```sh
 python src/train.py
-
+```
 
 The fine-tuned model will be saved in the models/clinicalbert_finetuned folder.
 
-Evaluation
+### Evaluation
 Evaluate the model's performance using the evaluation script:
+```sh
 python src/evaluate.py
+```
 
-
-Notebooks
+### Notebooks
 Explore the notebooks folder for various Jupyter notebooks that contain detailed analyses and experiments.
 
