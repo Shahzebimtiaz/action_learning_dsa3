@@ -96,6 +96,9 @@ python src/evaluate.py
 ![Recall, Precision, Accuracy](images/1.png)
 ![f1 score](images/2.png)
 
+### Predicted Labels from unseen data
+![Predicited labels](images/3.png)
+
 ### Notebooks
 Explore the notebooks folder for various Jupyter notebooks that contain detailed analyses and experiments.
 
