@@ -10,19 +10,24 @@ This project focuses on fine-tuning the ClinicalBERT model using clinical notes 
 .
 ├── config
 │ └── config.json # Hyperparameters and configuration for training
+
 ├── data
 │ ├── raw # Raw dataset from the source (clinical notes)
 │ └── processed # Processed dataset ready for training and evaluation
+
 ├── models
 │ └── clinicalbert_finetuned
 │ └── model.safetensors # Fine-tuned model saved here
+
 ├── notebooks
 │ └── *.ipynb # Jupyter notebooks for ClinicalBERT experiments
+
 ├── src
 │ ├── preprocess.py # Script for data preprocessing
 │ ├── train.py # Script for training the model
 │ ├── evaluate.py # Script for evaluating the model
 │ └── generate_csv.py # Script for generating CSV files for training
+
 └── README.md # Project README file
 
 
