@@ -91,6 +91,8 @@ Evaluate the model's performance using the evaluation script:
 ```sh
 python src/evaluate.py
 ```
+### Training Metrics
+![training](images/4.png)
 
 ### Evaluation Metrics
 ![Recall, Precision, Accuracy](images/1.png)
@@ -101,6 +103,9 @@ python src/evaluate.py
 
 ### Predicted Labels from unseen data
 ![Predicited labels](images/3.png)
+![Predicited labels](images/5.png)
+![Predicited labels](images/6.png)
+![Predicited labels](images/7.png)
 
 ### Notebooks
 Explore the notebooks folder for various Jupyter notebooks that contain detailed analyses and experiments.
