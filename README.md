@@ -95,6 +95,9 @@ python src/evaluate.py
 ### Evaluation Metrics
 ![Recall, Precision, Accuracy](images/1.png)
 ![f1 score](images/2.png)
+![Epoch1](images/epoch1.png)
+![Epoch2](images/epoch2.png)
+![Epoch3](images/epoch3.png)
 
 ### Predicted Labels from unseen data
 ![Predicited labels](images/3.png)
