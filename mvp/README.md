@@ -26,9 +26,9 @@ mvp/
 
 │ │ │ │ │ └── ner.py # NER endpoint for handling clinical text and bert model
 
-| | | | | └── auth.py # the endpoint for handling authentication and 
+│ │ │ │ │ └── auth.py # the endpoint for handling authentication and 
 
-| | | | | └── translate.py # the endpoint for handling text translation
+│ │ │ │ │ └── translate.py # the endpoint for handling text translation
 
 │ │ │ └── api.py # API router setup
 
@@ -47,6 +47,7 @@ mvp/
 │ │ │ └── user.py # Pydantic schemas for request and response validation
 
 │ │ ├── main.py # FastAPI application entry point, here you should include all the endpoints paths
+
 │ │
 
 │ └── requirements.txt # Python dependencies for the backend
