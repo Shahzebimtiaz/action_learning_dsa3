@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import ocr #, auth, ner, ocr, translate
+from app.api.v1.endpoints import ocr, test #, auth, ner, ocr, translate
 
 app = FastAPI()
 
@@ -14,5 +14,7 @@ def read_root():
 
 # app/main.py
 
-app.include_router(ocr.router, prefix="/api/v1", tags=["ocr"])
+app.include_router(ocr.router, prefix="/api/v1/endpoints", tags=["ocr"])
 
+
+app.include_router(test.router, prefix="/api/v1/endpoints", tags=["test"])

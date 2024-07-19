@@ -1,5 +1,5 @@
 import streamlit as st
-from pages import home, entity_detail, user_profile, admin, alerts
+from pages import home #, entity_detail, user_profile, admin, alerts
 
 PAGES = {
     "Home": home
@@ -15,3 +15,8 @@ selection = st.sidebar.radio("Go to", list(PAGES.keys()))
 
 page = PAGES[selection]
 page.main()
+
+
+
+
+
