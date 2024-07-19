@@ -7,8 +7,8 @@ This project is a web application that integrates Optical Character Recognition 
 ## Folder Structure
 
 The project directory is organized as follows:
-mvp/ \n
-│ \n
+mvp/ `\n`
+│ `\n`
 ├── backend/ # Backend directory containing FastAPI application \n
 │ ├── app/
 
