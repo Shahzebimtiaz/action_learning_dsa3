@@ -11,26 +11,44 @@ mvp/
 │
 ├── backend/ # Backend directory containing FastAPI application
 │ ├── app/
+
 │ │ ├── api/
+
 │ │ │ ├── v1/
+
 │ │ │ │ ├── endpoints/
+
 │ │ │ │ │ ├── ocr.py # OCR endpoint for handling image uploads and text extraction
+
 │ │ │ │ │ └── ner.py # NER endpoint for handling clinical text and bert model
+
 | | | | | └── auth.py # the endpoint for handling authentication and 
+
 | | | | | └── translate.py # the endpoint for handling text translation
+
 │ │ │ └── api.py # API router setup
+
 │ │ ├── core/
+
 │ │ │ └── security.py # Security utilities such as password hashing
+
 │ │ ├── models/
+
 │ │ │ └── user.py # Database models
+
 │ │ │ └── database.py # Database connection and setup
 │ │ ├── schemas/
+
 │ │ │ └── user.py # Pydantic schemas for request and response validation
+
 │ │ ├── main.py # FastAPI application entry point, here you should include all the endpoints paths
-│ │ 
+│ │
+
 │ └── requirements.txt # Python dependencies for the backend
 │
+
 ├── frontend/ # Frontend directory containing Streamlit application
+
 │ ├── pages/
 │ │ ├── home.py # Home page with functionality for uploading images and testing endpoints
 │ │ ├── entity_detail.py # Page for displaying entity details (if applicable)
