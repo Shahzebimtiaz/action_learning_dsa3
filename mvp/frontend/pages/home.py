@@ -31,7 +31,7 @@ OCR_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ocr/"
 test_api_url = "http://127.0.0.1:8000/api/v1/endpoints/test"
 
 def main():
-    st.title("Home Pagee")
+    st.title("Home Page")
     # if st.button("Test Endpoint"):
     #     try:
     #         # Make a GET request to the /test/ endpoint
