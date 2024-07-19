@@ -7,9 +7,13 @@ This project is a web application that integrates Optical Character Recognition 
 ## Folder Structure
 
 The project directory is organized as follows:
-mvp/ `\n`
-│ `\n`
-├── backend/ # Backend directory containing FastAPI application \n
+
+mvp/
+
+│
+
+├── backend/ # Backend directory containing FastAPI application
+
 │ ├── app/
 
 │ │ ├── api/
@@ -37,6 +41,7 @@ mvp/ `\n`
 │ │ │ └── user.py # Database models
 
 │ │ │ └── database.py # Database connection and setup
+
 │ │ ├── schemas/
 
 │ │ │ └── user.py # Pydantic schemas for request and response validation
@@ -50,17 +55,28 @@ mvp/ `\n`
 ├── frontend/ # Frontend directory containing Streamlit application
 
 │ ├── pages/
+
 │ │ ├── home.py # Home page with functionality for uploading images and testing endpoints
+
 │ │ ├── entity_detail.py # Page for displaying entity details (if applicable)
+
 │ │ ├── user_profile.py # Page for user profile management (if applicable)
+
 │ │ ├── admin.py # Page for admin functionalities (if applicable)
+
 │ │ └── alerts.py # Page for displaying alerts (if applicable)
+
 │ ├── app.py # Entry point for the Streamlit application, should include all pages here
+
 │ 
 ├── .gitignore # Git ignore file to exclude files from version control
+
 ├── README.md # This README file
+
 └── docker-compose.yml # Docker Compose configuration (if applicable)
+
 └── requirements.txt # Python dependencies for the backend, run pip install
+
 
 1. Install dependencies:
 Navigate to mvp directory and run:
