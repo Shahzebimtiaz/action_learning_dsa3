@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import ocr, test, translate, ner #, auth, ner, ocr
+from app.api.v1.endpoints import ocr, test, translate, ner, admin
+#from mvp.backend.app.api.v1.endpoints import ad #, auth, ner, ocr
 
 app = FastAPI()
 
@@ -18,3 +19,4 @@ app.include_router(ocr.router, prefix="/api/v1/endpoints", tags=["ocr"])
 app.include_router(translate.router, prefix="/api/v1/endpoints", tags=["translate"])
 app.include_router(ner.router, prefix="/api/v1/endpoints", tags=["ner"])
 app.include_router(test.router, prefix="/api/v1/endpoints", tags=["test"])
+app.include_router(admin.router, prefix="/api/v1/endpoints", tags=["admin"])
