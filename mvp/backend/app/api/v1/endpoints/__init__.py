@@ -1,1 +1,2 @@
 API_KEY_OCR = '6dJHuaNVoS94Kg1Zkkcg9Q==bnNzWycWizh12TXR'
+API_KEY_TRANSLATE = ''

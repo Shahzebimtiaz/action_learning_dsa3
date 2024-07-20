@@ -1,12 +1,12 @@
 import streamlit as st
-from pages import home #, entity_detail, user_profile, admin, alerts
+from pages import home #, admin, entity_detail, user_profile, admin, alerts
 
 PAGES = {
     "Home": home
     # ,
     # "Entity Detail": entity_detail,
     # "User Profile": user_profile,
-    # "Admin": admin,
+    #"Admin": admin
     # "Alerts": alerts,
 }
 

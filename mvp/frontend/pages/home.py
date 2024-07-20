@@ -28,24 +28,11 @@ import requests
 # URL for the OCR API
   # Update this URL if needed
 OCR_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ocr/"
+TRANSLATE_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/translate/"
 test_api_url = "http://127.0.0.1:8000/api/v1/endpoints/test"
 
 def main():
     st.title("Home Page")
-    # if st.button("Test Endpoint"):
-    #     try:
-    #         # Make a GET request to the /test/ endpoint
-    #         response = requests.get(f"{test_api_url}")
-            
-    #         # Check if the request was successful
-    #         if response.status_code == 200:
-    #             result = response.json()
-    #             st.success(f"Success: {result}")
-    #         else:
-    #             st.error(f"Failed to fetch data. Status code: {response.status_code}")
-    #     except Exception as e:
-    #         st.error(f"An error occurred: {str(e)}")
-
 
     # Upload Image
     uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
@@ -63,3 +50,26 @@ def main():
                 st.write(result)
             else:
                 st.write("Error occurred:", response.text)
+
+
+    # Translation Feature
+    st.subheader("Text Translation")
+    text_to_translate = st.text_area("Enter text to translate")
+    target_language = st.text_input("Enter target language (e.g., 'es' for Spanish, 'fr' for French)")
+
+    if st.button("Translate"):
+        if text_to_translate and target_language:
+            try:
+                payload = {"text": text_to_translate, "target_language": target_language}
+                response = requests.post(TRANSLATE_API_URL, json=payload)
+                if response.status_code == 200:
+                    result = response.json().get("translated_text", "Translation failed")
+                    st.write("Translated Text:")
+                    st.write(result)
+                else:
+                    st.error(f"Failed to translate text. Status code: {response.status_code}")
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
+        else:
+            st.error("Please enter text and target language")
+    
