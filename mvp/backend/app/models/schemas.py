@@ -18,17 +18,17 @@ class UserResponse(UserBase):
 
 
 
-class ActivityLogCreate(BaseModel):
-    user_id: int
-    action: str
-    details: Optional[str]
+# class ActivityLogCreate(BaseModel):
+#     user_id: int
+#     action: str
+#     details: Optional[str]
 
-class ActivityLogResponse(BaseModel):
-    id: int
-    user_id: int
-    action: str
-    details: Optional[str]
-    timestamp: str
+# class ActivityLogResponse(BaseModel):
+#     id: int
+#     user_id: int
+#     action: str
+#     details: Optional[str]
+#     timestamp: str
 
-    class Config:
-        orm_mode = True
+#     class Config:
+#         orm_mode = True

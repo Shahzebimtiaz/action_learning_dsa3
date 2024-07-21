@@ -53,19 +53,6 @@ def main():
                     st.error(f"Error: {response.json()}")
 
 
-    # with tab2:
-    #     st.subheader("User Activities")
-
-    #     response = requests.get(f"{ADMIN_API_URL_activity}")
-    #     try:
-    #         activities = response.json()
-    #         if not activities:
-    #             st.write("No activities found.")
-    #         else:
-    #             st.write(activities)
-    #     except ValueError:
-    #         st.error("Response is not in JSON format")
-
     with tab2:
         st.subheader("User Activities")
 

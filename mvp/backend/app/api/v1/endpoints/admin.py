@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.models.database import SessionLocal
 from app.models.user import User as DBUser, ActivityLog as DBActivityLog
-from app.models.schemas import UserCreate, UserResponse, ActivityLogResponse
+from app.models.schemas import UserCreate, UserResponse #, ActivityLogResponse
 from pydantic import BaseModel
 from datetime import datetime
 from app.models import user as models
@@ -97,4 +97,5 @@ def read_activity_logs(db: Session = Depends(get_db)):
     logs = db.query(DBActivityLog).all()
     return [ActivityLogResponse(action=log.activity_type, 
                                 details=log.detail, 
+                                source_language=log.source_language,
                                 timestamp=log.timestamp.isoformat()) for log in logs]
