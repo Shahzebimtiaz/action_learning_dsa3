@@ -102,11 +102,12 @@ TRANSLATE_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/translate/"
 NER_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ner/"
 LOG_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/log_user_activity/"  # New log endpoint
 
-def log_activity(user_id, activity_type, detail):
+def log_activity(user_id, activity_type, detail, source_language=None):
     payload = {
         "user_id": user_id,
         "activity_type": activity_type,
-        "detail": detail
+        "detail": detail,
+        "source_language": source_language
     }
     requests.post(LOG_API_URL, json=payload)
 
@@ -173,7 +174,7 @@ def main():
                         st.session_state.recognized_text = response.json().get("translated_text", "Translation failed")
                         st.write("Translated Text:")
                         st.write(st.session_state.recognized_text)
-                        log_activity(user_id, "Translate Text", f"Source: {source_language}, Target: {target_language}, Text: {text_to_translate}")
+                        log_activity(user_id, "Translate Text", f"Source: {source_language}, Target: {target_language}, Text: {text_to_translate}", source_language)
                     else:
                         st.error(f"Failed to translate text. Status code: {response.status_code}")
                 except Exception as e:
