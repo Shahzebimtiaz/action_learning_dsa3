@@ -16,14 +16,19 @@ class UserResponse(UserBase):
     class Config:
         orm_mode = True
 
-class ActivityLogBase(BaseModel):
-    user_id: int
-    activity_type: str
-    description: Optional[str] = None
 
-class ActivityLogResponse(ActivityLogBase):
+
+class ActivityLogCreate(BaseModel):
+    user_id: int
+    action: str
+    details: Optional[str]
+
+class ActivityLogResponse(BaseModel):
     id: int
-    timestamp: datetime
+    user_id: int
+    action: str
+    details: Optional[str]
+    timestamp: str
 
     class Config:
         orm_mode = True

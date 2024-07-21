@@ -10,10 +10,10 @@ CREATE TABLE users (
 );
 
 -- Create the activity_log table
-CREATE TABLE activity_log (
+CREATE TABLE activity_logs (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    activity_type VARCHAR(255) NOT NULL,  -- e.g., 'login', 'image ocr'
-    description TEXT,                     -- Additional info about the activity
+    user_id INT NOT NULL,
+    activity_type VARCHAR(50) NOT NULL,
+    detail TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

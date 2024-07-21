@@ -2,6 +2,8 @@
 
 import streamlit as st
 import requests
+import pandas as pd
+
 
 # URLs for the Admin APIs
 ADMIN_API_URL_users = "http://127.0.0.1:8000/api/v1/endpoints/users/"
@@ -50,12 +52,19 @@ def main():
                 else:
                     st.error(f"Error: {response.json()}")
 
-        if st.button("Test Endpoint"):
-            response = requests.get(TEST_API_URL)
-            if response.status_code == 200:
-                st.success("Test successful: " + response.json().get("message"))
-            else:
-                st.error(f"Error: {response.status_code}")
+
+    # with tab2:
+    #     st.subheader("User Activities")
+
+    #     response = requests.get(f"{ADMIN_API_URL_activity}")
+    #     try:
+    #         activities = response.json()
+    #         if not activities:
+    #             st.write("No activities found.")
+    #         else:
+    #             st.write(activities)
+    #     except ValueError:
+    #         st.error("Response is not in JSON format")
 
     with tab2:
         st.subheader("User Activities")
@@ -66,9 +75,13 @@ def main():
             if not activities:
                 st.write("No activities found.")
             else:
-                st.write(activities)
+                # Convert to DataFrame
+                df = pd.DataFrame(activities)
+                # Display DataFrame as a table
+                st.table(df)
         except ValueError:
             st.error("Response is not in JSON format")
+
 
 if __name__ == "__main__":
     main()

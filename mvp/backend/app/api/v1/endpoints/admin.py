@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session
 from app.models.database import SessionLocal
 from app.models.user import User as DBUser, ActivityLog as DBActivityLog
 from app.models.schemas import UserCreate, UserResponse, ActivityLogResponse
+from pydantic import BaseModel
+from datetime import datetime
+from app.models import user as models
 
 router = APIRouter()
 
@@ -52,7 +55,38 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "User deleted"}
 
+# @router.get("/activity_logs/", response_model=list[ActivityLogResponse])
+# def read_activity_logs(db: Session = Depends(get_db)):
+#     logs = db.query(DBActivityLog).all()
+#     return logs
+
+class LogActivityRequest(BaseModel):
+    user_id: int
+    activity_type: str
+    detail: str
+
+class ActivityLogResponse(BaseModel):
+    action: str
+    details: str
+    timestamp: str
+
+    class Config:
+        orm_mode = True
+
+@router.post("/log_user_activity/")
+def log_user_activity(request: LogActivityRequest, db: Session = Depends(get_db)):
+    db_log = DBActivityLog(user_id=request.user_id, activity_type=request.activity_type, detail=request.detail)
+    db.add(db_log)
+    db.commit()
+    db.refresh(db_log)
+    return {"message": "Activity logged successfully"}
+
+# @router.get("/activity_logs/", response_model=list[ActivityLogResponse])
+# def read_activity_logs(db: Session = Depends(get_db)):
+#     logs = db.query(models.ActivityLog).all()
+#     return [ActivityLogResponse(action=log.activity_type, details=log.detail, timestamp=log.timestamp.isoformat()) for log in logs]
+
 @router.get("/activity_logs/", response_model=list[ActivityLogResponse])
 def read_activity_logs(db: Session = Depends(get_db)):
     logs = db.query(DBActivityLog).all()
-    return logs
+    return [ActivityLogResponse(action=log.activity_type, details=log.detail, timestamp=log.timestamp.isoformat()) for log in logs]
