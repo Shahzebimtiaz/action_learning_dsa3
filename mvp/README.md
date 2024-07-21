@@ -17,9 +17,9 @@ mvp/<br>
 │ │ │ │ ├── endpoints/<br>
 │ │ │ │ │ ├── ocr.py # OCR endpoint for handling image uploads and text extraction<br>
 │ │ │ │ │ └── ner.py # NER endpoint for handling clinical text and bert model<br>
-| | | | | └── auth.py # the endpoint for handling authentication and <br>
-| | | | | └── translate.py # the endpoint for handling text translation<br>
-| | | | | └── admin.py # the endpoint for handling user creation, deletion, logging...<br>
+│ │ │ │ │ └── auth.py # the endpoint for handling authentication and <br>
+│ │ │ │ │ └── translate.py # the endpoint for handling text translation<br>
+│ │ │ │ │ └── admin.py # the endpoint for handling user creation, deletion, logging...<br>
 │ │ │ └── api.py # API router setup, add all endpoint py files to this file<br>
 │ │ │ │ │ └── auth.py # the endpoint for handling authentication and<br>
 │ │ │ │ │ └── translate.py # the endpoint for handling text translation<br>
