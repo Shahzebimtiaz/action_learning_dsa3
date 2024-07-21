@@ -7,44 +7,48 @@ This project is a web application that integrates Optical Character Recognition 
 ## Folder Structure
 
 The project directory is organized as follows:
-mvp/
+
+mvp/<br>
+│<br>
+├── backend/ # Backend directory containing FastAPI application<br>
+│ ├── app/<br>
+│ │ ├── api/<br>
+│ │ │ ├── v1/<br>
+│ │ │ │ ├── endpoints/<br>
+│ │ │ │ │ ├── ocr.py # OCR endpoint for handling image uploads and text extraction<br>
+│ │ │ │ │ └── ner.py # NER endpoint for handling clinical text and bert model<br>
+| | | | | └── auth.py # the endpoint for handling authentication and <br>
+| | | | | └── translate.py # the endpoint for handling text translation<br>
+| | | | | └── admin.py # the endpoint for handling user creation, deletion, logging...<br>
+│ │ │ └── api.py # API router setup, add all endpoint py files to this file<br>
+│ │ │ │ │ └── auth.py # the endpoint for handling authentication and<br>
+│ │ │ │ │ └── translate.py # the endpoint for handling text translation<br>
+│ │ │ └── api.py # API router setup<br>
+│ │ ├── core/<br>
+│ │ │ └── security.py # Security utilities such as password hashing<br>
+│ │ ├── models/<br>
+│ │ │ └── user.py # Database models<br>
+│ │ │ └── schemas.py # Database connection and <br>
+│ │ │ └── database.py # Database connection and setup<br>
+│ │ ├── schemas/<br>
+│ │ │ └── user.py # Pydantic schemas for request and response validation<br>
+│ │ ├── main.py # FastAPI application entry point, here you should include all the endpoints paths<br>
+│ │<br>
+│ └── requirements.txt # Python dependencies for the backend<br>
 │
-├── backend/ # Backend directory containing FastAPI application
-│ ├── app/
-│ │ ├── api/
-│ │ │ ├── v1/
-│ │ │ │ ├── endpoints/
-│ │ │ │ │ ├── ocr.py # OCR endpoint for handling image uploads and text extraction
-│ │ │ │ │ └── ner.py # NER endpoint for handling clinical text and bert model
-| | | | | └── auth.py # the endpoint for handling authentication and 
-| | | | | └── translate.py # the endpoint for handling text translation
-| | | | | └── admin.py # the endpoint for handling user creation, deletion, logging...
-│ │ │ └── api.py # API router setup, add all endpoint py files to this file
-│ │ ├── core/
-│ │ │ └── security.py # Security utilities such as password hashing
-│ │ ├── models/
-│ │ │ └── user.py # Database models
-│ │ │ └── database.py # Database connection and 
-│ │ │ └── schemas.py # Database connection and 
-│ │ ├── schemas/
-│ │ │ └── user.py # Pydantic schemas for request and response validation
-│ │ ├── main.py # FastAPI application entry point, here you should include all the endpoints paths
-│ │ 
-│ └── requirements.txt # Python dependencies for the backend
-│
-├── frontend/ # Frontend directory containing Streamlit application
-│ ├── pages/
-│ │ ├── home.py # Home page with functionality for uploading images and testing endpoints
-│ │ ├── entity_detail.py # Page for displaying entity details (if applicable)
-│ │ ├── user_profile.py # Page for user profile management (if applicable)
-│ │ ├── admin.py # Page for admin functionalities (if applicable)
-│ │ └── alerts.py # Page for displaying alerts (if applicable)
-│ ├── app.py # Entry point for the Streamlit application, should include all pages here
+├── frontend/ # Frontend directory containing Streamlit application<br>
+│ ├── pages/<br>
+│ │ ├── home.py # Home page with functionality for uploading images and testing endpoints<br>
+│ │ ├── entity_detail.py # Page for displaying entity details (if applicable)<br>
+│ │ ├── user_profile.py # Page for user profile management (if applicable)<br>
+│ │ ├── admin.py # Page for admin functionalities (if applicable)<br>
+│ │ └── alerts.py # Page for displaying alerts (if applicable)<br>
+│ ├── app.py # Entry point for the Streamlit application, should include all pages here<br>
 │ 
-├── .gitignore # Git ignore file to exclude files from version control
-├── README.md # This README file
-└── docker-compose.yml # Docker Compose configuration (if applicable)
-└── requirements.txt # Python dependencies for the backend, run pip install
+├── .gitignore # Git ignore file to exclude files from version control<br>
+├── README.md # This README file<br>
+└── docker-compose.yml # Docker Compose configuration (if applicable)<br>
+└── requirements.txt # Python dependencies for the backend, run pip install<br>
 
 
 1. Install dependencies:
