@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 class UserBase(BaseModel):
@@ -16,6 +16,14 @@ class UserResponse(UserBase):
     class Config:
         orm_mode = True
 
+class FeedbackRequest(BaseModel):
+    original_text: str
+    feedback: List[dict]
+
+class FeedbackResponse(BaseModel):
+    id: int
+    original_text: str
+    feedback: List[dict]
 
 
 # class ActivityLogCreate(BaseModel):
