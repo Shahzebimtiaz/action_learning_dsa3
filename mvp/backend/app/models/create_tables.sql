@@ -21,3 +21,9 @@ CREATE TABLE activity_logs (
     detail TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+-- Create the feedback table
+CREATE TABLE feedback (
+    id SERIAL PRIMARY KEY,
+    original_text TEXT NOT NULL,
+    feedback JSON NOT NULL
+);
