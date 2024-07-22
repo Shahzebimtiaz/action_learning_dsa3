@@ -101,6 +101,7 @@ OCR_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ocr/"
 TRANSLATE_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/translate/"
 NER_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ner/"
 LOG_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/log_user_activity/"  # New log endpoint
+FEEDBACK_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/feedback/"
 
 def log_activity(user_id, activity_type, detail, source_language=None):
     payload = {
@@ -110,6 +111,18 @@ def log_activity(user_id, activity_type, detail, source_language=None):
         "source_language": source_language
     }
     requests.post(LOG_API_URL, json=payload)
+
+def submit_feedback(original_text, feedback):
+    payload = {
+        "original_text": original_text,
+        "feedback": feedback
+    }
+    response = requests.post(FEEDBACK_API_URL, json=payload)
+    if response.status_code == 200:
+        st.success("Feedback submitted successfully!")
+    else:
+        st.error(f"Failed to submit feedback. Status code: {response.status_code}")
+
 
 def main():
     st.title("Home Page")
@@ -226,6 +239,16 @@ def main():
                     st.error(f"Failed to run NER. Status code: {response.status_code}")
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
+
+    st.subheader("Submit Feedback")
+    feedback_text = st.text_area("Enter your feedback here")
+    if st.button("Submit Feedback"):
+        if feedback_text:
+            feedback = [{"comment": feedback_text}]
+            submit_feedback(st.session_state.recognized_text, feedback)
+        else:
+            st.error("Please enter your feedback")
+
 
 if __name__ == "__main__":
     main()
