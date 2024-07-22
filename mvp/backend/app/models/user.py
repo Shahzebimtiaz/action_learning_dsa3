@@ -9,10 +9,14 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    firstname = Column(String, nullable=False)
+    lastname = Column(String, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
+    date_of_birth = Column(String, nullable=False)
+    gender = Column(String, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
-    isadmin = Column(Boolean, default=False)  # New column to indicate admin status
+    isadmin = Column(Boolean, default=False)
 
 class ActivityLog(Base):
     __tablename__ = "activity_logs"
