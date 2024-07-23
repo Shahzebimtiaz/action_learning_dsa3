@@ -107,6 +107,7 @@
 import streamlit as st
 import requests
 import pandas as pd
+from datetime import datetime, timedelta
 
 # URLs for the Admin APIs
 ADMIN_API_URL_users = "http://127.0.0.1:8000/api/v1/endpoints/users/"
@@ -122,29 +123,42 @@ def main():
         st.subheader("Manage Users")
 
         action = st.radio("Choose Action", ["Add User", "Edit User", "Delete User"])
+        today = datetime.today()
+        ninety_years_ago = today - timedelta(days=365*90)
 
         if action == "Add User":
             firstname = st.text_input("First Name")
             lastname = st.text_input("Last Name")
             email = st.text_input("Email")
             password = st.text_input("Password", type="password")
-            date_of_birth = st.date_input("Date of Birth")
+            date_of_birth = st.date_input(
+                "Date of Birth",
+                value=today.date(),
+                min_value=ninety_years_ago.date(),  
+                max_value=today.date())
             gender = st.text_input("Gender")
             isadmin = st.checkbox("Is Admin")
             if st.button("Add User"):
-                date_of_birth_str = date_of_birth.strftime('%Y-%m-%d')
-                response = requests.post(f"{ADMIN_API_URL_users}", 
-                                         json={"email": email, 
-                                               "password": password,
-                                               "isadmin": isadmin,
-                                               "firstname":firstname,
-                                               "lastname":lastname,
-                                               "date_of_birth":date_of_birth_str,
-                                               "gender": gender })
+                response = requests.post(
+                    f"{ADMIN_API_URL_users}", 
+                    json={
+                        "email": email, 
+                        "password": password,
+                        "isadmin": isadmin,
+                        "firstname": firstname,
+                        "lastname": lastname,
+                        "date_of_birth": date_of_birth.isoformat(),
+                        "gender": gender 
+                    }
+                )
                 if response.status_code == 200:
-                    st.success("User added successfully!")
+                    try:
+                        response_json = response.json()
+                        st.success("User added successfully!")
+                    except requests.exceptions.JSONDecodeError:
+                        st.error("User added, but failed to decode the JSON response")
                 else:
-                    st.error(f"Error: {response.json()}")
+                    st.error(f"Error: Status code {response.status_code}, Response: {response.text}")
 
         elif action == "Edit User":
             user_id = st.number_input("User ID", min_value=1)
@@ -152,11 +166,14 @@ def main():
             last_name = st.text_input("New Last Name")
             email = st.text_input("New Email")
             password = st.text_input("New Password", type="password")
-            date_of_birth = st.date_input("New Date of Birth")
+            date_of_birth = st.date_input(
+                "Date of Birth",
+                value=today.date(),
+                min_value=ninety_years_ago.date(),  
+                max_value=today.date())
             gender = st.text_input("New Gender")
             isadmin = st.checkbox("Is Admin")
             if st.button("Update User"):
-                date_of_birth_str = date_of_birth.strftime('%Y-%m-%d')
                 response = requests.put(
                     f"{ADMIN_API_URL_users}{user_id}",
                     json={
@@ -164,24 +181,32 @@ def main():
                         "lastname": last_name,
                         "email": email,
                         "password": password,
-                        "date_of_birth": date_of_birth_str,
+                        "date_of_birth": date_of_birth.isoformat(),
                         "gender": gender,
                         "isadmin": isadmin
                     }
                 )
                 if response.status_code == 200:
-                    st.success("User updated successfully!")
+                    try:
+                        response_json = response.json()
+                        st.success("User updated successfully!")
+                    except requests.exceptions.JSONDecodeError:
+                        st.error("User updated, but failed to decode the JSON response")
                 else:
-                    st.error(f"Error: {response.json()}")
+                    st.error(f"Error: Status code {response.status_code}, Response: {response.text}")
 
         elif action == "Delete User":
             user_id = st.number_input("User ID to delete", min_value=1)
             if st.button("Delete User"):
                 response = requests.delete(f"{ADMIN_API_URL_users}{user_id}")
                 if response.status_code == 200:
-                    st.success("User deleted successfully!")
+                    try:
+                        response_json = response.json()
+                        st.success("User deleted successfully!")
+                    except requests.exceptions.JSONDecodeError:
+                        st.error("User deleted, but failed to decode the JSON response")
                 else:
-                    st.error(f"Error: {response.json()}")
+                    st.error(f"Error: Status code {response.status_code}, Response: {response.text}")
 
     with tab2:
         st.subheader("User Activities")

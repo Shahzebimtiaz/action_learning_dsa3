@@ -20,7 +20,7 @@ class UserResponse(UserBase):
     #
     firstname: str
     lastname: str
-    date_of_birth: str
+    date_of_birth: datetime
     gender: str
     created_at: datetime
     #
