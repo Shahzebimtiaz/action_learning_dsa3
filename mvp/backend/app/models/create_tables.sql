@@ -35,7 +35,6 @@ CREATE TABLE clinical_notes (
     note_text TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 -- Create the feedback table
 CREATE TABLE feedback (
     id SERIAL PRIMARY KEY,
