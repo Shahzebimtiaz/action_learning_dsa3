@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 class UserBase(BaseModel):
@@ -32,6 +32,25 @@ class UserUpdate(BaseModel):
     date_of_birth: datetime
     gender: str
     email: str
+
+
+class FeedbackItem(BaseModel):
+    comment: str
+
+class FeedbackRequest(BaseModel):
+    original_text: str
+    feedback: List[FeedbackItem]
+
+    def serialize_feedback(self) -> List[dict]:
+        return [item.dict() for item in self.feedback]
+
+class FeedbackResponse(BaseModel):
+    id: int
+    original_text: str
+    feedback: List[FeedbackItem]  # Assuming feedback is deserialized here
+
+    class Config:
+        orm_mode = True
 
 # class ActivityLogCreate(BaseModel):
 #     user_id: int
