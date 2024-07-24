@@ -8,7 +8,6 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-    #
     firstname: str
     lastname: str
     date_of_birth: str
@@ -17,18 +16,21 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: int
     created_at: datetime
-    #
     firstname: str
     lastname: str
     date_of_birth: str
     gender: str
     created_at: datetime
-    #
 
     class Config:
         orm_mode = True
 
 
+class UserUpdate(BaseModel):
+    firstname: str
+    lastname: str
+    date_of_birth: datetime
+    gender: str
 
 # class ActivityLogCreate(BaseModel):
 #     user_id: int

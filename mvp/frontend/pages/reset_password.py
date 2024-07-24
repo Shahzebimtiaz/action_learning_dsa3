@@ -20,7 +20,7 @@ def reset_password():
             if response.status_code == 200:
                 st.success("Password reset successfully!")
                 st.session_state['page'] = 'login'
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning(response.json().get("detail", "Something went wrong"))
         else:
@@ -28,5 +28,5 @@ def reset_password():
     
     if st.button("Back to Login"):
         st.session_state['page'] = 'login'
-        st.experimental_rerun()
+        st.rerun()
 
