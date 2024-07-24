@@ -31,6 +31,7 @@ class UserUpdate(BaseModel):
     lastname: str
     date_of_birth: datetime
     gender: str
+    email: str
 
 # class ActivityLogCreate(BaseModel):
 #     user_id: int

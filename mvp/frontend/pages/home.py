@@ -101,21 +101,39 @@ OCR_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ocr/"
 TRANSLATE_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/translate/"
 NER_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ner/"
 LOG_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/log_user_activity/"  # New log endpoint
+PROFILE_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/profile/"
 
-def log_activity(user_id, activity_type, detail, source_language=None):
+def fetch_user_profile(user_id):
+    response = requests.get(f"{PROFILE_API_URL}{user_id}")
+    if response.status_code == 200:
+        return response.json()
+    else:
+        st.warning(response.json().get("detail", "Something went wrong"))
+        return None
+    
+
+def log_activity(user_id, email, activity_type, detail, source_language, recognized_text, ner_result):
     payload = {
         "user_id": user_id,
+        "email": email,
         "activity_type": activity_type,
         "detail": detail,
-        "source_language": source_language
+        "source_language": source_language,
+        "recognized_text": recognized_text,
+        "ner_result": ner_result
     }
     requests.post(LOG_API_URL, json=payload)
 
-def main():
+def main(user_id):
     st.title("Home Page")
     
     # Simulate a user_id for demonstration purposes
-    user_id = 1
+    user_id = user_id
+    user_profile = fetch_user_profile(user_id)
+    email = user_profile.get('email', 'No email found')
+    if user_profile:
+        st.write(f"User ID: {user_id}")
+        st.write(f"Email: {email}")
 
     # Initialize session state variables
     if 'recognized_text' not in st.session_state:
@@ -146,8 +164,11 @@ def main():
                     st.write("Recognized Text:")
                     st.write(st.session_state.recognized_text)
                     log_activity(user_id, 
+                                 email,
                                  "Recognize Text", 
                                  f"Image: {uploaded_image.name}",
+                                 '',
+                                 st.session_state.recognized_text,
                                  '')
                 else:
                     st.write("Error occurred:", response.text)
@@ -162,8 +183,12 @@ def main():
                 st.write("Entered Text:")
                 st.write(st.session_state.recognized_text)
                 log_activity(user_id, 
+                             email,
                              "Direct Text Input", 
-                             f"Text: {direct_text}")
+                             f"Text: {direct_text}",
+                             '',
+                             st.session_state.recognized_text,
+                             '')
             else:
                 st.error("Please enter some text")
 
@@ -176,8 +201,12 @@ def main():
                 st.write("Uploaded Text File Content:")
                 st.write(st.session_state.recognized_text)
                 log_activity(user_id, 
+                             email,
                              "Upload Text File", 
-                             f"File: {uploaded_text_file.name}")
+                             f"File: {uploaded_text_file.name}",
+                             '',
+                             st.session_state.recognized_text,
+                             '')
             else:
                 st.error("Please upload a file in .txt format")
 
@@ -199,10 +228,13 @@ def main():
                         st.session_state.recognized_text = response.json().get("translated_text", "Translation failed")
                         st.write("Translated Text:")
                         st.write(st.session_state.recognized_text)
-                        log_activity(user_id, 
+                        log_activity(user_id,
+                                     email, 
                                      "Translate Text", 
                                      f"Text: {text_to_translate}", 
-                                     source_language)
+                                     source_language,
+                                     st.session_state.recognized_text, 
+                                     '')
                     else:
                         st.error(f"Failed to translate text. Status code: {response.status_code}")
                 except Exception as e:
@@ -219,9 +251,13 @@ def main():
                     st.write("NER Result:")
                     st.write(ner_result)
                     log_activity(user_id, 
+                                 email,
                                  "Run NER", 
-                                 f"Text: {st.session_state.recognized_text}, NER Result: {ner_result}",
-                                 '')
+                                 '',
+                                 #f"Text: {st.session_state.recognized_text}, NER Result: {ner_result}",
+                                 '',
+                                 st.session_state.recognized_text, 
+                                 json.dumps(ner_result))
                 else:
                     st.error(f"Failed to run NER. Status code: {response.status_code}")
             except Exception as e:

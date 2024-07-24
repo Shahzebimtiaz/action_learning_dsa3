@@ -16,8 +16,13 @@ CREATE TABLE users (
 -- Create the activity_log table
 CREATE TABLE activity_logs (
     id SERIAL PRIMARY KEY,
+    email VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
     activity_type VARCHAR(50) NOT NULL,
     detail TEXT,
+    source_language TEXT,
+    recognized_text TEXT,
+    ner_result TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
 );

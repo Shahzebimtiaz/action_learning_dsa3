@@ -206,15 +206,21 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
 
 class LogActivityRequest(BaseModel):
     user_id: int
+    email: str
     activity_type: str
     detail: str
     source_language: Optional[str]
+    recognized_text: str
+    ner_result: str
 
 class ActivityLogResponse(BaseModel):
+    email: str
     action: str
     details: str
     timestamp: str
     source_language: Optional[str]
+    recognized_text: str
+    ner_result: str
 
     class Config:
         orm_mode = True
@@ -223,9 +229,12 @@ class ActivityLogResponse(BaseModel):
 def log_user_activity(request: LogActivityRequest, db: Session = Depends(get_db)):
     db_log = DBActivityLog(
         user_id=request.user_id, 
+        email=request.email,
         activity_type=request.activity_type, 
         detail=request.detail,
-        source_language=request.source_language
+        source_language=request.source_language,
+        recognized_text= request.recognized_text,
+        ner_result = request.ner_result
     )
     db.add(db_log)
     db.commit()
@@ -236,8 +245,11 @@ def log_user_activity(request: LogActivityRequest, db: Session = Depends(get_db)
 def read_activity_logs(db: Session = Depends(get_db)):
     logs = db.query(DBActivityLog).all()
     return [ActivityLogResponse(
+        email=log.email,
         action=log.activity_type, 
         details=log.detail, 
-        source_language=log.source_language,
-        timestamp=log.timestamp.isoformat()
+        source_language=log.source_language or '',
+        timestamp=log.timestamp.isoformat(),
+        recognized_text=log.recognized_text or '',
+        ner_result=log.ner_result or ''
     ) for log in logs]

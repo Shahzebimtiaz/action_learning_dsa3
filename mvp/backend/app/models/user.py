@@ -23,9 +23,12 @@ class ActivityLog(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    email = Column(String, nullable=False)
     activity_type = Column(String, nullable=False)
     detail = Column(Text)
     source_language = Column(String, nullable=True)
+    recognized_text = Column(String, nullable=True)
+    ner_result = Column(String, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="logs")

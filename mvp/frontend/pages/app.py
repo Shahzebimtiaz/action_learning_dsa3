@@ -30,7 +30,7 @@ def main():
     if st.session_state['logged_in']:
         # Display navigation options only for logged in users
         navigation_options = {
-            "Home": home.main,
+            "Home": lambda: home.main(st.session_state['user_id']),
             "Profile": lambda: profile.profile(st.session_state['user_id']),
             "Admin": admin.main,
             "Logout": logout
