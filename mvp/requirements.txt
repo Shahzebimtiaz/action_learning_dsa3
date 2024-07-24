@@ -6,3 +6,6 @@ python-multipart
 requests
 streamlit
 streamlit_option_menu
+streamlit-webrtc==0.47.7
+SpeechRecognition==3.10.4
+SpeechRecognition==0.25.1
