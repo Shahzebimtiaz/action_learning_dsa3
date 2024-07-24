@@ -4,7 +4,31 @@ import hashlib
 from datetime import datetime, timedelta
 from reset_password import reset_password
 
+
 LOGIN_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/login/"
+LOG_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/log_user_activity/"
+
+
+def log_activity(user_id, email, action_type):
+    payload = {
+        "user_id": user_id,
+        "email": email,
+        "activity_type": action_type,
+        "timestamp": datetime.utcnow().isoformat(),
+        "detail": "",
+        "source_language": "",
+        "recognized_text": "",
+        "ner_result": ""
+    }
+    try:
+        response = requests.post(LOG_API_URL, json=payload)
+        if response.status_code == 200:
+            print("Activity logged successfully.")
+        else:
+            print(f"Failed to log activity. Status code: {response.status_code}")
+    except Exception as e:
+        print(f"An error occurred while logging activity: {str(e)}")
+
 
 def login():
     st.title("Login")
@@ -44,6 +68,13 @@ def login():
             st.session_state['logged_in'] = True
             st.session_state['user_id'] = data.get("user_id")
             st.session_state['page'] = 'home'
+
+            log_activity(
+                user_id=st.session_state['user_id'],
+                email=email,
+                action_type="login"
+            )
+            
             st.rerun()
         else:
             st.warning(data.get("detail", "Incorrect email or password"))
