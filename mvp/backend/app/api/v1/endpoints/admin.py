@@ -122,6 +122,8 @@ from app.models.schemas import UserCreate, UserResponse
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+import hashlib
+
 
 router = APIRouter()
 
@@ -135,19 +137,35 @@ def get_db():
 
 @router.post("/users/", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    print(f"Received request: {user}")
+    existing_user = db.query(DBUser).filter(DBUser.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
     db_user = DBUser(
         email=user.email, 
         password=user.password, 
         isadmin=user.isadmin,
         firstname=user.firstname,
         lastname=user.lastname,
-        date_of_birth=datetime.strptime(user.date_of_birth, '%Y-%m-%d'),  # Convert string to date
+        date_of_birth = user.date_of_birth,
         gender=user.gender
     )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    print(f"Created user: {db_user}")
     return db_user
+
+
+# @router.post("/users/")
+# def create_user(user: UserCreate, db: Session = Depends(get_db)):
+#     db_user = create_user(db, user.email)
+#     print(db_user)
+#     if db_user:
+#         raise HTTPException(status_code=400, detail="Email already registered")
+#     hashed_password = hashlib.sha256(user.password.encode()).hexdigest()
+#     create_user(db, user.firstname, user.lastname, user.email, hashed_password, user.date_of_birth, user.gender)
+#     return {"message": "User created successfully"}
 
 @router.get("/users/{user_id}", response_model=UserResponse)
 def read_user(user_id: int, db: Session = Depends(get_db)):
@@ -161,12 +179,17 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    existing_user = db.query(DBUser).filter(DBUser.email == user.email).first()
+    if existing_user and existing_user.id != user_id:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
     db_user.email = user.email
     db_user.password = user.password
     db_user.isadmin = user.isadmin
     db_user.firstname = user.firstname
     db_user.lastname = user.lastname
-    db_user.date_of_birth = datetime.strptime(user.date_of_birth, '%Y-%m-%d')  # Convert string to date
+    db_user.date_of_birth = user.date_of_birth#datetime.strptime(user.date_of_birth, '%Y-%m-%d')  # Convert string to date
     db_user.gender = user.gender
     db.commit()
     db.refresh(db_user)
