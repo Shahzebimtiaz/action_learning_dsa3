@@ -96,6 +96,8 @@ import streamlit as st
 import requests
 import json
 import pandas as pd
+import re
+
 
 # URLs for the APIs
 OCR_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ocr/"
@@ -288,60 +290,85 @@ def main(user_id):
                     st.error(f"An error occurred: {str(e)}")
             else:
                 st.error("Please enter text to translate")
-
+    # Initialize session state variables if they do not exist
+    if 'search_query' not in st.session_state:
+        st.session_state.search_query = ""
+    if 'selected_types' not in st.session_state:
+        st.session_state.selected_types = []
     if st.session_state.recognized_text:
         if st.button("Run NER"):
             try:
                 ner_data = fetch_ner_entities(st.session_state.recognized_text)
                 tokens = ner_data.get("tokens", [])
                 labels = ner_data.get("labels", [])
-                entities = combine_tokens(tokens, labels)
-
-                st.write("## Recognized Entities")
-                displayed_labels = set()
-                for entity in entities:
-                    if entity["label"] not in displayed_labels and entity["label"] != "O":
-                        st.write(f"- {entity['label']}")
-                        displayed_labels.add(entity["label"])
-
-                st.write("## Recommendations")
-                recommendations = {
-                    'age': "Ensure appropriate age-related care and regular screenings. Consult with a healthcare provider for age-specific recommendations.",
-                    'allergy_name': "Ensure the patient avoids known allergens. Consult with an allergist for personalized management.",
-                    'bmi': "Monitor body mass index regularly and maintain a healthy lifestyle. Consult with a healthcare provider for dietary and exercise advice.",
-                    'cancer': "Regular monitoring and follow-ups are essential. Consult with an oncologist for personalized treatment and management.",
-                    'chronic_disease': "Regular monitoring and follow-ups are essential. Consult with a healthcare provider for personalized management.",
-                    'clinical_variable': "Monitor the variable closely and consider additional testing if abnormal values persist.",
-                    'contraception_consent': "Ensure informed consent for contraception is obtained and documented. Consult with a healthcare provider for guidance.",
-                    'ethnicity': "Consider the patient's ethnicity in their healthcare plan. Consult with a healthcare provider for culturally sensitive care.",
-                    'gender': "Ensure gender-specific healthcare needs are addressed. Consult with a healthcare provider for appropriate screenings.",
-                    'language_fluency': "Ensure communication is clear and effective. Consider using translation services if needed.",
-                    'lower_bound': "Monitor for values below the normal range and take necessary action.",
-                    'pregnancy': "Provide prenatal care and regular check-ups. Consult with an obstetrician for pregnancy management.",
-                    'technology_access': "Ensure the patient has access to necessary healthcare technology. Provide alternatives if technology access is limited.",
-                    'treatment': "Verify dosage and administration. Adhere to the prescribed treatment plan and consult with a healthcare provider for any adjustments.",
-                    'upper_bound': "Monitor for values above the normal range and take necessary action.",
-                }
-
-                displayed_recommendations = set()
-                for entity in entities:
-                    label = entity['label']
-                    if label != "O" and label in recommendations:
-                        if label not in displayed_recommendations:
-                            st.write(f"- {recommendations[label]}")
-                            displayed_recommendations.add(label)
-
-                # Download options for processed data
-                if st.button("Download Recognized Entities as CSV"):
-                    df_entities = pd.DataFrame(entities)
-                    csv_data = df_entities.to_csv(index=False)
-                    st.download_button("Download CSV", csv_data, file_name="recognized_entities.csv", mime="text/csv")
-
-                if st.button("Download Recommendations as JSON"):
-                    json_data = json.dumps({"recommendations": list(displayed_recommendations)}, indent=4)
-                    st.download_button("Download JSON", json_data, file_name="recommendations.json", mime="application/json")
+                st.session_state['entities'] = combine_tokens(tokens, labels)
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
+
+    if st.session_state.entities:
+        st.subheader("Search and Filter Entities")
+        st.session_state.search_query = st.text_input("Search for an entity:", st.session_state.search_query)
+        search_query = st.session_state.search_query
+
+        # Filter Options
+        label_set = ['age', 'allergy_name', 'bmi', 'cancer', 'chronic_disease', 'clinical_variable', 'contraception_consent', 'ethnicity', 'gender', 'language_fluency', 'lower_bound', 'pregnancy', 'technology_access', 'treatment', 'upper_bound']
+        st.session_state.selected_types = st.multiselect("Filter by entity type:", options=label_set, default=st.session_state.selected_types)
+        selected_types = st.session_state.selected_types
+
+        entities = st.session_state.entities
+
+        # Apply search and filter
+        if search_query:
+            regex = re.compile(re.escape(search_query), re.IGNORECASE)
+            entities = [entity for entity in entities if regex.search(entity["text"])]
+
+        if selected_types:
+            entities = [entity for entity in entities if entity["label"] in selected_types]
+
+        st.write("## Recognized Entities")
+        displayed_labels = set()
+        for entity in entities:
+            if entity["label"] not in displayed_labels and entity["label"] != "O":
+                st.write(f"- {entity['label']}")
+                displayed_labels.add(entity["label"])
+
+        st.write("## Recommendations")
+        recommendations = {
+            'age': "Ensure appropriate age-related care and regular screenings. Consult with a healthcare provider for age-specific recommendations.",
+            'allergy_name': "Ensure the patient avoids known allergens. Consult with an allergist for personalized management.",
+            'bmi': "Monitor body mass index regularly and maintain a healthy lifestyle. Consult with a healthcare provider for dietary and exercise advice.",
+            'cancer': "Regular monitoring and follow-ups are essential. Consult with an oncologist for personalized treatment and management.",
+            'chronic_disease': "Regular monitoring and follow-ups are essential. Consult with a healthcare provider for personalized management.",
+            'clinical_variable': "Monitor the variable closely and consider additional testing if abnormal values persist.",
+            'contraception_consent': "Ensure informed consent for contraception is obtained and documented. Consult with a healthcare provider for guidance.",
+            'ethnicity': "Consider the patient's ethnicity in their healthcare plan. Consult with a healthcare provider for culturally sensitive care.",
+            'gender': "Ensure gender-specific healthcare needs are addressed. Consult with a healthcare provider for appropriate screenings.",
+            'language_fluency': "Ensure communication is clear and effective. Consider using translation services if needed.",
+            'lower_bound': "Monitor for values below the normal range and take necessary action.",
+            'pregnancy': "Provide prenatal care and regular check-ups. Consult with an obstetrician for pregnancy management.",
+            'technology_access': "Ensure the patient has access to necessary healthcare technology. Provide alternatives if technology access is limited.",
+            'treatment': "Verify dosage and administration. Adhere to the prescribed treatment plan and consult with a healthcare provider for any adjustments.",
+            'upper_bound': "Monitor for values above the normal range and take necessary action.",
+        }
+
+        displayed_recommendations = set()
+        for entity in entities:
+            label = entity['label']
+            if label != "O" and label in recommendations:
+                if label not in displayed_recommendations:
+                    st.write(f"- {recommendations[label]}")
+                    displayed_recommendations.add(label)
+
+        # Download options for processed data
+        if st.button("Download Recognized Entities as CSV"):
+            df_entities = pd.DataFrame(entities)
+            csv_data = df_entities.to_csv(index=False)
+            st.download_button("Download CSV", csv_data, file_name="recognized_entities.csv", mime="text/csv")
+
+        if st.button("Download Recommendations as JSON"):
+            json_data = json.dumps({"recommendations": list(displayed_recommendations)}, indent=4)
+            st.download_button("Download JSON", json_data, file_name="recommendations.json", mime="application/json")
+
 
 if __name__ == "__main__":
     main()
