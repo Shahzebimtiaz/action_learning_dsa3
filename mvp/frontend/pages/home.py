@@ -95,6 +95,21 @@
 import streamlit as st
 import requests
 import json
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, AudioProcessorBase
+import av
+import numpy as np
+import speech_recognition as sr
+from pydub import AudioSegment
+import io
+import time
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, AudioProcessorBase
+import av
+import numpy as np
+import speech_recognition as sr
+import threading
+import asyncio
+import websockets
+
 
 # URLs for the APIs
 OCR_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ocr/"
@@ -102,6 +117,52 @@ TRANSLATE_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/translate/"
 NER_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/ner/"
 LOG_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/log_user_activity/"  # New log endpoint
 FEEDBACK_API_URL = "http://127.0.0.1:8000/api/v1/endpoints/feedback/"
+
+class AudioProcessor(AudioProcessorBase):
+    def __init__(self):
+        self.recognizer = sr.Recognizer()
+        self.audio_data = np.array([], dtype=np.int16)
+        self.result = ""
+        self.lock = threading.Lock()
+
+    def recv(self, frame: av.AudioFrame):
+        audio = frame.to_ndarray()
+        with self.lock:
+            self.audio_data = np.concatenate((self.audio_data, audio))
+            if len(self.audio_data) > frame.sample_rate * 10:  # keep only last 10 seconds
+                self.audio_data = self.audio_data[-frame.sample_rate * 10:]
+        return frame
+
+    def recognize(self):
+        with self.lock:
+            if len(self.audio_data) == 0:
+                return
+            audio_data = sr.AudioData(self.audio_data.tobytes(), 16000, 1)
+            try:
+                self.result = self.recognizer.recognize_google(audio_data)
+            except sr.UnknownValueError:
+                self.result = "Google Speech Recognition could not understand audio"
+            except sr.RequestError as e:
+                self.result = f"Could not request results from Google Speech Recognition service; {e}"
+
+
+
+# class AudioProcessor(AudioProcessorBase):
+#     def __init__(self):
+#         self.recognizer = sr.Recognizer()
+#         self.result = ""
+
+#     def recv(self, frame: av.AudioFrame):
+#         audio_data = np.frombuffer(frame.to_ndarray(), np.int16)
+#         audio_data = sr.AudioData(audio_data.tobytes(), frame.sample_rate, 2)  # Assuming 16-bit PCM
+#         try:
+#             self.result = self.recognizer.recognize_google(audio_data)
+#         except sr.UnknownValueError:
+#             self.result = "Google Speech Recognition could not understand audio"
+#         except sr.RequestError as e:
+#             self.result = f"Could not request results from Google Speech Recognition service; {e}"
+#         return frame
+
 
 def log_activity(user_id, activity_type, detail, source_language=None):
     payload = {
@@ -112,16 +173,16 @@ def log_activity(user_id, activity_type, detail, source_language=None):
     }
     requests.post(LOG_API_URL, json=payload)
 
-def submit_feedback(original_text, feedback):
-    payload = {
-        "original_text": original_text,
-        "feedback": feedback
-    }
-    response = requests.post(FEEDBACK_API_URL, json=payload)
-    if response.status_code == 200:
-        st.success("Feedback submitted successfully!")
-    else:
-        st.error(f"Failed to submit feedback. Status code: {response.status_code}")
+    # def submit_feedback(original_text, feedback):
+    #     payload = {
+    #         "original_text": original_text,
+    #         "feedback": feedback
+    #     }
+    #     response = requests.post(FEEDBACK_API_URL, json=payload)
+    #     if response.status_code == 200:
+    #         st.success("Feedback submitted successfully!")
+    #     else:
+    #         st.error(f"Failed to submit feedback. Status code: {response.status_code}")
 
 
 def main():
@@ -130,14 +191,19 @@ def main():
     # Simulate a user_id for demonstration purposes
     user_id = 1
 
-    # Initialize session state variables
+
     if 'recognized_text' not in st.session_state:
         st.session_state.recognized_text = ""
 
-    # Start Over Button
-    if st.button("Start Over"):
-        st.session_state.recognized_text = ""
-        st.rerun()
+    if 'feedback_text' not in st.session_state:
+        st.session_state.feedback_text = ""
+
+    if 'recording' not in st.session_state:
+        st.session_state.recording = False
+
+    if 'start_time' not in st.session_state:
+        st.session_state.start_time = None
+
 
     st.subheader("Upload and Process File")
     upload_option = st.radio("Choose an option", 
@@ -240,15 +306,49 @@ def main():
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
 
+    if 'recognized_text' not in st.session_state:
+        st.session_state.recognized_text = ""
+
+    if 'feedback_text' not in st.session_state:
+        st.session_state.feedback_text = ""
+
+    if st.button("Start Over", key="start_over"):
+        st.session_state.recognized_text = ""
+        st.session_state.feedback_text = ""
+        st.experimental_rerun()
+
     st.subheader("Submit Feedback")
-    feedback_text = st.text_area("Enter your feedback here")
-    if st.button("Submit Feedback"):
+    feedback_text = st.text_area("Enter your feedback here", value=st.session_state.feedback_text, key="feedback_area")
+
+    audio_processor = AudioProcessor()
+    webrtc_ctx = webrtc_streamer(key="speech-to-text", mode=WebRtcMode.SENDRECV,
+                                 audio_processor_factory=lambda: audio_processor,
+                                 media_stream_constraints={"video": False, "audio": True},
+                                 async_processing=True)
+
+    def update_feedback():
+        while True:
+            if webrtc_ctx.state.playing:
+                audio_processor.recognize()
+                if audio_processor.result:
+                    st.session_state.feedback_text = audio_processor.result
+                    st.experimental_rerun()
+            else:
+                break
+
+    threading.Thread(target=update_feedback, daemon=True).start()
+
+    if st.button("Submit Feedback", key="submit_feedback"):
         if feedback_text:
-            feedback = [{"comment": feedback_text}]
-            submit_feedback(st.session_state.recognized_text, feedback)
+            st.session_state.feedback_text = feedback_text
+            payload = {"original_text": st.session_state.recognized_text, "feedback": [{"comment": feedback_text}]}
+            response = requests.post(FEEDBACK_API_URL, json=payload)
+            if response.status_code == 200:
+                st.success("Feedback submitted successfully!")
+            else:
+                st.error(f"Failed to submit feedback. Status code: {response.status_code}")
         else:
             st.error("Please enter your feedback")
-
-
+                
 if __name__ == "__main__":
     main()
