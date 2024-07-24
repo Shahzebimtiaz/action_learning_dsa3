@@ -18,33 +18,42 @@ def fetch_ner_entities(text):
 def combine_tokens(tokens, labels):
     entities = []
     current_entity = {"text": "", "label": ""}
+    unique_entities = set()  # To track unique entities
     
     for token, label in zip(tokens, labels):
         if label.startswith("B-"):
             if current_entity["text"]:
-                entities.append(current_entity)
+                entity_key = (current_entity["text"], current_entity["label"])
+                if entity_key not in unique_entities:
+                    entities.append(current_entity)
+                    unique_entities.add(entity_key)
             current_entity = {"text": token, "label": label[2:]}
         elif label.startswith("I-"):
             if current_entity["label"] == label[2:]:
                 current_entity["text"] += token
             else:
                 if current_entity["text"]:
-                    entities.append(current_entity)
+                    entity_key = (current_entity["text"], current_entity["label"])
+                    if entity_key not in unique_entities:
+                        entities.append(current_entity)
+                        unique_entities.add(entity_key)
                 current_entity = {"text": token, "label": label[2:]}
         else:
             if current_entity["text"]:
-                entities.append(current_entity)
-            current_entity = {"text": token, "label": "O"}
+                entity_key = (current_entity["text"], current_entity["label"])
+                if entity_key not in unique_entities:
+                    entities.append(current_entity)
+            current_entity = {"text": "", "label": "O"}
     
     if current_entity["text"]:
-        entities.append(current_entity)
+        entity_key = (current_entity["text"], current_entity["label"])
+        if entity_key not in unique_entities:
+            entities.append(current_entity)
     
     return entities
 
 def generate_alerts(entities):
     alerts = []
-    
-    # Rules for generating alerts and recommendations
     recommendations = {
         'age': "Ensure appropriate age-related care and regular screenings. Consult with a healthcare provider for age-specific recommendations.",
         'allergy_name': "Ensure the patient avoids known allergens. Consult with an allergist for personalized management.",
@@ -63,16 +72,15 @@ def generate_alerts(entities):
         'upper_bound': "Monitor for values above the normal range and take necessary action.",
     }
     
+    unique_labels = set()
+    
     for entity in entities:
-        if entity['label'] in recommendations:
-            alert_text = f"Alert for {entity['text']} ({entity['label']})"
-            recommendation = recommendations[entity['label']]
-        else:
-            alert_text = f"Alert for {entity['text']} ({entity['label']})"
-            recommendation = "No specific recommendation available."
-        
-        if entity['label'] in ['chronic_disease', 'treatment', 'age', 'clinical_variable']:
-            severity = "High" if entity['label'] in ['chronic_disease', 'treatment'] else "Medium"
+        label = entity['label']
+        if label not in unique_labels:
+            unique_labels.add(label)
+            alert_text = f"Alert for {label}"
+            recommendation = recommendations.get(label, "No specific recommendation available.")
+            severity = "High" if label in ['chronic_disease', 'treatment'] else "Medium"
             alerts.append({"alert": f"{alert_text} - {recommendation}", "severity": severity})
     
     return alerts[:3]  # Return only the first 3 alerts
@@ -94,15 +102,19 @@ def main():
 
             # Display entities with highlighted text
             st.write("## Recognized Entities")
+            displayed_labels = set()
             for entity in entities:
-                if entity["label"] != "O":
-                    st.write(f"- {entity['text']} ({entity['label']})")
+                if entity["label"] not in displayed_labels and entity["label"] != "O":
+                    st.write(f"- {entity['label']}")
+                    displayed_labels.add(entity["label"])
             
-            # Display alerts
+            # Display alerts with color coding based on severity
             st.write("## Generated Alerts")
             if alerts:
                 for alert in alerts:
-                    st.write(f"- {alert['alert']} | Severity: {alert['severity']}")
+                    severity = alert['severity']
+                    color = "red" if severity == "High" else "orange"
+                    st.markdown(f"<p style='color:{color};'>{alert['alert']} | Severity: {severity}</p>", unsafe_allow_html=True)
             else:
                 st.write("No alerts generated.")
             
