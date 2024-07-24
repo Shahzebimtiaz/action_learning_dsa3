@@ -1,0 +1,7 @@
+nct_id,note_type,note_text
+unknown_code,unknown_type,unknown_display (unknown_type)
+8310-5,Body Temperature,unknown_display (Body Temperature)
+8867-4,Heart Rate,unknown_display (Heart Rate)
+9279-1,Respiratory Rate,unknown_display (Respiratory Rate)
+8302-2,Height,unknown_display (Height)
+3141-9,Weight,unknown_display (Weight)
