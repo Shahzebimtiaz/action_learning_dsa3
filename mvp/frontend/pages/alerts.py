@@ -101,12 +101,12 @@ def main():
             alerts = generate_alerts(entities)
 
             # Display entities with highlighted text
-            st.write("## Recognized Entities")
-            displayed_labels = set()
-            for entity in entities:
-                if entity["label"] not in displayed_labels and entity["label"] != "O":
-                    st.write(f"- {entity['label']}")
-                    displayed_labels.add(entity["label"])
+            #st.write("## Recognized Entities")
+            #displayed_labels = set()
+            #for entity in entities:
+                #if entity["label"] not in displayed_labels and entity["label"] != "O":
+                    #st.write(f"- {entity['label']}")
+                    #displayed_labels.add(entity["label"])
             
             # Display alerts with color coding based on severity
             st.write("## Generated Alerts")
