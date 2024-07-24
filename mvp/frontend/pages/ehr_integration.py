@@ -38,8 +38,8 @@ def process_data(fhir_data, resource_type):
 def insert_clinical_notes(notes):
     conn = psycopg2.connect(
         dbname='clinicalbert_app',
-        user='clinicalbert_user',
-        password='password',
+        user='postgres',
+        password='123',
         host='localhost'
     )
     cursor = conn.cursor()
