@@ -13,6 +13,7 @@ def logout():
     st.success("Logged out successfully!")
     st.rerun()
 
+
 # Main application
 def main():
     st.title("Clinical NER Web App")
