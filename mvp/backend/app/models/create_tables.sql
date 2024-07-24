@@ -26,3 +26,12 @@ CREATE TABLE activity_logs (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 );
+
+-- creating a table to store clinical notes
+CREATE TABLE clinical_notes (
+    id SERIAL PRIMARY KEY,
+    nct_id VARCHAR(255) UNIQUE NOT NULL,
+    note_type VARCHAR(255),
+    note_text TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
