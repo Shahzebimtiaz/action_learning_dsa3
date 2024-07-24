@@ -1,5 +1,5 @@
 import streamlit as st
-import home, admin, SignUp, login, profile, reset_password
+import home, admin, SignUp, login, profile, reset_password, ehr_integration
 
 # Function to set the current page
 def set_page(page_name):
@@ -33,6 +33,7 @@ def main():
             "Home": lambda: home.main(st.session_state['user_id']),
             "Profile": lambda: profile.profile(st.session_state['user_id']),
             "Admin": admin.main,
+            "EHR Integration": ehr_integration.main,
             "Logout": logout
         }
     else:
