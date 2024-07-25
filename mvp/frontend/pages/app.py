@@ -1,5 +1,6 @@
 import streamlit as st
 import home, admin, SignUp, login, profile, reset_password, ehr_integration, feedback, alerts
+import finding_hospitals
 
 # Function to set the current page
 def set_page(page_name):
@@ -37,6 +38,7 @@ def main():
             "EHR Integration": ehr_integration.main,
             "Feedback": feedback.main,
             "Alert":alerts.main,
+            "Hospital Finder": finding_hospitals.main,
             "Logout": logout
         }
     else:

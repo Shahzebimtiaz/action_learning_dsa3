@@ -25,6 +25,7 @@ def profile(user_id):
     if user_data:
         firstname = st.text_input("First Name", value=user_data.get("firstname", ""))
         lastname = st.text_input("Last Name", value=user_data.get("lastname", ""))
+        email = user_data.get("email", "")
         date_of_birth_str = user_data.get("date_of_birth", "")
         date_of_birth = None
 
@@ -47,6 +48,7 @@ def profile(user_id):
                 "firstname": firstname,
                 "lastname": lastname,
                 "date_of_birth": date_of_birth.isoformat() if date_of_birth else None,
-                "gender": gender
+                "gender": gender,
+                "email": email
             }
             update_user_profile(user_id, user_update)
