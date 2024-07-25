@@ -91,19 +91,19 @@ To set up the PostgreSQL database for the project, follow these steps:
    - Password: admin password specified during installation.
    - Save the settings.
 
-* *Create a New Database:*
+* **Create a New Database:**
 
    - Right-click on Databases under the `clinicalbert_app` and choose Create -> Database.
    - Name the database: `clinicalbert_app`.
    - Save the settings.
 
-* Create Tables:
+* *Create Tables:*
 Execute the sql script in folder `backend/models/create_tables.sql` using pgAdmin query tool.
 
 
-2. To run fastapi server, navigate to backend directory and run:
+3. To run fastapi server, navigate to backend directory and run:
 `uvicorn app.main:app --reload`
 
-3. To run streamlit server, navigate to frontend directory and run:
+4. To run streamlit server, navigate to frontend directory and run:
 `streamlit run app.py`
 
