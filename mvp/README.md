@@ -8,6 +8,7 @@ This project is a web application that integrates Optical Character Recognition 
 
 The project directory is organized as follows:
 
+```
 mvp/<br>
 │<br>
 ├── backend/ # Backend directory containing FastAPI application<br>
@@ -49,26 +50,40 @@ mvp/<br>
 ├── README.md # This README file<br>
 └── docker-compose.yml # Docker Compose configuration (if applicable)<br>
 └── requirements.txt # Python dependencies for the backend, run pip install<br>
+```
+
+## Folder Details
+**backend:** Contains the FastAPI application.
+
+- `app/api/v1/endpoints/:` Holds endpoints for OCR, NER, authentication, translation, and admin functionalities.
+- `app/core/security.py:` Contains security utilities like password hashing.
+- `app/models/:` Includes database models and connection setup.
+- `app/schemas/:` Contains Pydantic schemas for request and response validation.
+- `app/main.py:` The entry point for the FastAPI application.
+- `requirements.txt:` Python dependencies for the backend.
+- `frontend:` Contains the Streamlit application.
+
+pages/: Holds different pages for the Streamlit application including home, entity details, user profile, admin functionalities, and alerts.
+app.py: The entry point for the Streamlit application.
 
 
-1. Install dependencies:
-Navigate to mvp directory and run:
-`pip install -r requirements.txt`
 
-2. Setup postgresql database:
+1. **Install dependencies:**
+Navigate to mvp directory and run: `pip install -r requirements.txt`
 
+2. **Setup postgresql database:**
 To set up the PostgreSQL database for the project, follow these steps:
 
-* Installation:
+* **Installation:**
 
-   - Go to [PostgreSQL Download Page](https://www.postgresql.org/download/) and download the appropriate installer for your operating system.
+   - Go to `[PostgreSQL Download Page]`(https://www.postgresql.org/download/) and download the appropriate installer for your operating system.
    - Follow the on-screen installation instructions.
    - During installation, you will be prompted to create a new admin password.
-   - Leave the connection port as 5432.
+   - Leave the connection port as `5432`.
 
-* Create a New PostgreSQL Server:
+* **Create a New PostgreSQL Server:**
 
-   - Open pgAdmin 4.
+   - Open `pgAdmin 4.`
    - Enter the admin password you input during installation.
    - Create a new server named `action_learning_dsa3`.
    - In the Connection tab, enter the Host name/address as `localhost` and keep the port as `5432`.
@@ -76,14 +91,13 @@ To set up the PostgreSQL database for the project, follow these steps:
    - Password: admin password specified during installation.
    - Save the settings.
 
-* Create a New Database:
+* *Create a New Database:*
 
    - Right-click on Databases under the `clinicalbert_app` and choose Create -> Database.
    - Name the database: `clinicalbert_app`.
    - Save the settings.
 
 * Create Tables:
-
 Execute the sql script in folder `backend/models/create_tables.sql` using pgAdmin query tool.
 
 
