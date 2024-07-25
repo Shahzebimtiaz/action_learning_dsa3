@@ -217,6 +217,13 @@ def main(user_id):
                 labels = ner_data.get("labels", [])
                 st.session_state['entities'] = combine_tokens(tokens, labels)
                 st.write(st.session_state['entities'])
+                log_activity(user_id,
+                             email,
+                             "Run NER",
+                             '',
+                             '',
+                             '',
+                             json.dumps(st.session_state['entities']))
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
 
